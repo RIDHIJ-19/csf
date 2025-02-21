@@ -4,3 +4,4 @@ scikit-learn==1.6.1
 pillow==11.1.0
 easyocr==1.7.2
 requests==2.32.3
+gunicorn==23.0.0
