@@ -1,6 +1,6 @@
 import numpy as np
-from flask import Flask, request, jsonify, render_template, url_for
-from sklearn.feature_extraction.text import TfidfVectorizer, TfidfTransformer
+from flask import Flask, request, jsonify, render_template
+from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 from PIL import Image
 import io
@@ -15,7 +15,6 @@ with open("stopwords.txt", "r") as file:
     stopwords = file.read().splitlines()
 
 vectorizer = pickle.load(open("tfidfvectorizer.pkl", "rb"))
-
 reader = easyocr.Reader(['en', 'hi'])
 
 @app.route('/')
@@ -29,7 +28,6 @@ def predict():
         user_input = request.form['text']
         transformed_input = vectorizer.transform([user_input])
         prediction = model_cb.predict(transformed_input)[0]
-
     return render_template('cb_index.html', prediction=prediction, image_prediction=None)
 
 @app.route('/predict_text_api', methods=['POST'])
@@ -40,10 +38,10 @@ def predict_api():
     if user_input:
         transformed_input = vectorizer.transform([user_input])
         prediction = model_cb.predict(transformed_input)[0]
-        output = "1" if prediction == 1 else "0"
     else:
-        output = "No input provided"
+        prediction = "No input provided"
 
+    output = "1" if prediction == 1 else "0"
     return jsonify(output)
 
 @app.route('/predict_image', methods=['GET', 'POST'])
@@ -53,12 +51,11 @@ def predict_image():
         image = Image.open(io.BytesIO(file.read()))
         image = np.array(image)
 
-        # Use dynamic URL for API call
-        api_url = url_for('predict_api', _external=True)
-        response = requests.post(api_url, json={'text': ' '.join(reader.readtext(image, detail=0))})
+        extracted_text = reader.readtext(image, detail=0)
+        extracted_text = ' '.join(extracted_text)
+
+        # Use relative URL assuming same server on Vercel
+        response = requests.post(request.url_root + 'predict_text_api', json={'text': extracted_text})
         return render_template('cb_index.html', image_prediction=response.json(), prediction=None)
 
-# Expose app for gunicorn
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+# Removed app.run() so Vercel handles server execution
