@@ -59,3 +59,5 @@ def predict_image():
         return render_template('cb_index.html', image_prediction=response.json(), prediction=None)
 
 # Removed app.run() so Vercel handles server execution
+if __name__ == '__main__':
+    app.run(debug=True)
