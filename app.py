@@ -9,12 +9,12 @@ import requests
 import os
 
 app = Flask(__name__)
-model_cb = pickle.load(open('decision_tree_model.pkl', 'rb'))
+model_cb = pickle.load(open('model/decision_tree_model.pkl', 'rb'))
 
 with open("stopwords.txt", "r") as file:
     stopwords = file.read().splitlines()
 
-vectorizer = pickle.load(open("tfidfvectorizer.pkl", "rb"))
+vectorizer = pickle.load(open("model/tfidfvectorizer.pkl", "rb"))
 reader = easyocr.Reader(['en', 'hi'])
 
 @app.route('/')
