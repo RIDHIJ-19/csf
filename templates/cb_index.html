@@ -166,7 +166,7 @@
     
     <div class="container">
         <div class="static-title">CYBER<span>BULLYING </span>DETECTION</div>
-        <form action="{{ url_for('predict')}}" method="POST">
+        <form action="" method="POST">
             <div class="form-group">
                 <textarea name="text" class="form-control" rows="4" placeholder="Enter text to analyze...">{{ request.form.get('text', '') }}</textarea>
             </div>
