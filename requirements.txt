@@ -1,8 +1,5 @@
 Flask
 numpy
-pillow
-requests
-easyocr
-scikit-learn
+ 
 gunicorn
 #.venv\Scripts\activate
